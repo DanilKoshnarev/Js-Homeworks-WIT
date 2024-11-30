@@ -1,11 +1,14 @@
 import React from 'react';
-import PostList from './PostList';
+import Header from './Header';
+import Main from './Main';
+import Footer from './Footer';
 
 const App: React.FC = () => {
   return (
     <div>
-      <h1>Велком!</h1>
-      <PostList />
+      <Header />
+      <Main />
+      <Footer />
     </div>
   );
 };
