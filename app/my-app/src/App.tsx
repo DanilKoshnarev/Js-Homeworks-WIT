@@ -1,24 +1,22 @@
-import React, { useState } from 'react';
-import Header from './Header';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './Layout';
 import Main from './Main';
-import Footer from './Footer';
-import CategoryFilter from './CategoryFilter';
+import PostPage from './PostPage';
+import NotFound from './NotFound';
 
 const App: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState('Все');
-  const categories = ['Все', 'маркетинг', 'программирование', 'котики', 'фильмы'];
-
   return (
-    <div>
-      <Header />
-      <CategoryFilter
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-      />
-      <Main category={selectedCategory} />
-      <Footer />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Main category="Все" />} />
+          <Route path="posts" element={<Main category="Все" />} />
+          <Route path="post/:id" element={<PostPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 };
 
