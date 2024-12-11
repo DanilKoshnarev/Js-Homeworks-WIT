@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Post.css';
 
 interface PostProps {
   title: string;
@@ -19,13 +20,13 @@ const Post: React.FC<PostProps> = ({ title, description, imageUrl, author }) => 
   };
 
   return (
-    <div>
+    <div className="post">
       <h1>{title}</h1>
       <p>{description}</p>
       <img src={imageUrl} alt={title} />
-      <p>Автор: {author}</p>
+      <p className="author">Автор: {author}</p>
       <p>Лайки: {likes}</p>
-      <button onClick={handleLike} disabled={liked}>Лайк</button>
+      <button className="like-button" onClick={handleLike} disabled={liked}>Лайк</button>
     </div>
   );
 };
