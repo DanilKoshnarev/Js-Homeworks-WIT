@@ -1,14 +1,13 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Header: React.FC = () => {
   return (
     <header>
       <nav>
         <ul>
-          <li><a href="#home">Главная</a></li>
-          <li><a href="#posts">Посты</a></li>
-          <li><a href="#about">О нас</a></li>
-          <li><a href="#contact">Контакты</a></li>
+          <li><Link to="/">Главная</Link></li>
+          <li><Link to="/posts">Посты</Link></li>
         </ul>
       </nav>
     </header>
