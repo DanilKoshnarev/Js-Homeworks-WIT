@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Post from './Post';
 
 interface PostData {
@@ -10,55 +11,38 @@ interface PostData {
   category: string;
 }
 
-const posts: PostData[] = [
-  {
-    id: 1,
-    title: 'Первый пост',
-    description: 'Описание первого поста',
-    imageUrl: 'path/to/image1.jpg',
-    author: 'Автор 1',
-    category: 'маркетинг'
-  },
-  {
-    id: 2,
-    title: 'Второй пост',
-    description: 'Описание второго поста',
-    imageUrl: 'path/to/image2.jpg',
-    author: 'Автор 2',
-    category: 'программирование'
-  },
-  {
-    id: 3,
-    title: 'Третий пост',
-    description: 'Описание третьего поста',
-    imageUrl: 'path/to/image3.jpg',
-    author: 'Автор 3',
-    category: 'котики'
-  },
-  {
-    id: 4,
-    title: 'Четвертый пост',
-    description: 'Описание четвертого поста',
-    imageUrl: 'path/to/image4.jpg',
-    author: 'Автор 4',
-    category: 'фильмы'
-  },
-  // Добавьте больше постов по необходимости
-];
-
 const PostList: React.FC<{ category: string }> = ({ category }) => {
+  const [posts, setPosts] = useState<PostData[]>([]);
+
+  useEffect(() => {
+    fetch('https://dev.to/api/articles')
+      .then(response => response.json())
+      .then(data => {
+        const formattedData = data.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          description: item.description,
+          imageUrl: item.cover_image,
+          author: item.user.name,
+          category: item.tag_list[0] || 'разное'
+        }));
+        setPosts(formattedData);
+      });
+  }, []);
+
   const filteredPosts = category === 'Все' ? posts : posts.filter(post => post.category === category);
 
   return (
     <div>
       {filteredPosts.map(post => (
-        <Post
-          key={post.id}
-          title={post.title}
-          description={post.description}
-          imageUrl={post.imageUrl}
-          author={post.author}
-        />
+        <Link key={post.id} to={`/post/${post.id}`}>
+          <Post
+            title={post.title}
+            description={post.description}
+            imageUrl={post.imageUrl}
+            author={post.author}
+          />
+        </Link>
       ))}
     </div>
   );
