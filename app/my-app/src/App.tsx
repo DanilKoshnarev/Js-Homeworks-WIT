@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './Layout';
+import Layout from './shared/Layout';
 import Main from './Main';
-import PostPage from './PostPage';
+import PostPage from './pages/PostPage';
 import NotFound from './NotFound';
 
 const App: React.FC = () => {
