@@ -1,42 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import usePosts from '../hooks/usePosts';
+import PostCard from '../shared/PostList/PostCard';
 import { Link } from 'react-router-dom';
-import Post from './Post';
+import { Oval } from 'react-loader-spinner';
 
-interface PostData {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  author: string;
-  category: string;
-}
+const PostListPage: React.FC = () => {
+  const { posts, loading, error } = usePosts();
 
-const PostList: React.FC<{ category: string }> = ({ category }) => {
-  const [posts, setPosts] = useState<PostData[]>([]);
+  if (loading) {
+    return (
+      <div className="loader">
+        <Oval
+          height={80}
+          width={80}
+          color="#007bff"
+          ariaLabel="loading"
+        />
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    fetch('https://dev.to/api/articles')
-      .then(response => response.json())
-      .then(data => {
-        const formattedData = data.map((item: any) => ({
-          id: item.id,
-          title: item.title,
-          description: item.description,
-          imageUrl: item.cover_image,
-          author: item.user.name,
-          category: item.tag_list[0] || 'разное'
-        }));
-        setPosts(formattedData);
-      });
-  }, []);
-
-  const filteredPosts = category === 'Все' ? posts : posts.filter(post => post.category === category);
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
     <div>
-      {filteredPosts.map(post => (
+      {posts.map(post => (
         <Link key={post.id} to={`/post/${post.id}`}>
-          <Post
+          <PostCard
             title={post.title}
             description={post.description}
             imageUrl={post.imageUrl}
@@ -48,4 +40,4 @@ const PostList: React.FC<{ category: string }> = ({ category }) => {
   );
 };
 
-export default PostList;
+export default PostListPage;
