@@ -1,11 +1,15 @@
 import React from 'react';
-import usePosts from '../hooks/usePosts';
-import PostCard from '../shared/PostList/PostCard';
-import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import usePostById from '../hooks/usePostById';
+import useTitle from '../hooks/useTitle';
 import { Oval } from 'react-loader-spinner';
+import './PostPage.css';
 
-const PostListPage: React.FC = () => {
-  const { posts, loading, error } = usePosts();
+const PostPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const { post, loading, error } = usePostById(id);
+
+  useTitle(post ? post.title : 'Загрузка...');
 
   if (loading) {
     return (
@@ -24,20 +28,22 @@ const PostListPage: React.FC = () => {
     return <div className="error">{error}</div>;
   }
 
+  if (!post) {
+    return null;
+  }
+
   return (
-    <div>
-      {posts.map(post => (
-        <Link key={post.id} to={`/post/${post.id}`}>
-          <PostCard
-            title={post.title}
-            description={post.description}
-            imageUrl={post.imageUrl}
-            author={post.author}
-          />
-        </Link>
-      ))}
+    <div className="post-page">
+      <h1>{post.title}</h1>
+      {post.cover_image && <img src={post.cover_image} alt={post.title} />}
+      <div className="tags">
+        {post.tags.map(tag => (
+          <span key={tag} className="tag">{tag}</span>
+        ))}
+      </div>
+      <div className="content" dangerouslySetInnerHTML={{ __html: post.body_markdown }} />
     </div>
   );
 };
 
-export default PostListPage;
+export default PostPage;
