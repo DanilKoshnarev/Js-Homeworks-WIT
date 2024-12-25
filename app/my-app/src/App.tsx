@@ -1,21 +1,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './shared/Layout';
-import Main from './Main';
+import Layout from './Layout';
+import MainPage from './pages/MainPage';
+import PostListPage from './pages/PostListPage';
 import PostPage from './pages/PostPage';
-import NotFound from './NotFound';
+import Errorfile from './Errorfile';
 
 const App: React.FC = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Main category="Все" />} />
-          <Route path="posts" element={<Main category="Все" />} />
-          <Route path="post/:id" element={<PostPage />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
+      <Errorfile>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<MainPage />} />
+            <Route path="posts" element={<PostListPage />} />
+            <Route path="post/:id" element={<PostPage />} />
+          </Route>
+        </Routes>
+      </Errorfile>
     </Router>
   );
 };
