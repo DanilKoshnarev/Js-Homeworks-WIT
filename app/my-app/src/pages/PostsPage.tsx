@@ -1,51 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import './PostPage.css';
+import React from 'react';
+import usePosts from '../hooks/usePosts';
+import PostCard from '../shared/PostList/PostCard';
+import { Link } from 'react-router-dom';
+import { Oval } from 'react-loader-spinner';
 
-interface PostData {
-  title: string;
-  cover_image: string;
-  tags: string[];
-  body_markdown: string;
-}
+const PostListPage: React.FC = () => {
+  const { posts, loading, error } = usePosts();
 
-const PostPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<PostData | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    fetch(`https://dev.to/api/articles/${id}`)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Ошибка при загрузке данных');
-        }
-        return response.json();
-      })
-      .then(data => setPost(data))
-      .catch(error => setError(error.message));
-  }, [id]);
+  if (loading) {
+    return (
+      <div className="loader">
+        <Oval
+          height={80}
+          width={80}
+          color="#007bff"
+          ariaLabel="loading"
+        />
+      </div>
+    );
+  }
 
   if (error) {
     return <div className="error">{error}</div>;
   }
 
-  if (!post) {
-    return <div>Загрузка...</div>;
-  }
-
   return (
-    <div className="post-page">
-      <h1>{post.title}</h1>
-      {post.cover_image && <img src={post.cover_image} alt={post.title} />}
-      <div className="tags">
-        {post.tags.map(tag => (
-          <span key={tag} className="tag">{tag}</span>
-        ))}
-      </div>
-      <div className="content" dangerouslySetInnerHTML={{ __html: post.body_markdown }} />
+    <div>
+      {posts.map(post => (
+        <Link key={post.id} to={`/post/${post.id}`}>
+          <PostCard
+            title={post.title}
+            description={post.description}
+            imageUrl={post.imageUrl}
+            author={post.author}
+          />
+        </Link>
+      ))}
     </div>
   );
 };
 
-export default PostPage;
+export default PostListPage;
