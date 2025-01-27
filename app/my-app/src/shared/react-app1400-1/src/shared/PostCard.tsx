@@ -14,14 +14,22 @@ const PostCard = ({ post }: { post: Post }) => {
         return null;
     }
 
-    const { favorites, addFavorite } = favoritesContext;
-    const isFavorite = favorites.some(favPost => favPost.id === post.id);
+    const { addFavorite, removeFavorite, isFavorite } = favoritesContext;
+    const favorite = isFavorite(post.id);
+
+    const handleLikeClick = () => {
+        if (favorite) {
+            removeFavorite(post.id);
+        } else {
+            addFavorite(post);
+        }
+    };
 
     return (
         <div>
             <h2>{post.title}</h2>
-            <button onClick={() => addFavorite(post)}>
-                {isFavorite ? 'Unlike' : 'Like'}
+            <button onClick={handleLikeClick}>
+                {favorite ? 'Unlike' : 'Like'}
             </button>
         </div>
     );
