@@ -1,32 +1,30 @@
-import React, { useState } from 'react';
-import './Post.css';
+import React from 'react';
+import { Comment } from '../models/GenericComment';
 
 interface PostProps {
   title: string;
   description: string;
   imageUrl: string;
   author: string;
+  comments: Comment<any>[];
 }
 
-const Post: React.FC<PostProps> = ({ title, description, imageUrl, author }) => {
-  const [likes, setLikes] = useState(0);
-  const [liked, setLiked] = useState(false);
-
-  const handleLike = () => {
-    if (!liked) {
-      setLikes(likes + 1);
-      setLiked(true);
-    }
-  };
-
+const Post: React.FC<PostProps> = ({ title, description, imageUrl, author, comments }) => {
   return (
-    <div className="post">
+    <div>
       <h1>{title}</h1>
       <p>{description}</p>
       <img src={imageUrl} alt={title} />
-      <p className="author">Автор: {author}</p>
-      <p>Лайки: {likes}</p>
-      <button className="like-button" onClick={handleLike} disabled={liked}>Лайк</button>
+      <p>Автор: {author}</p>
+      <p>Комментарии:</p>
+      <ul>
+        {comments.map(comment => (
+          <li key={comment.id}>
+            <h2>{comment.title}</h2>
+            <p>{comment.body}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
