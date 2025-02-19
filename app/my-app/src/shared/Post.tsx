@@ -1,12 +1,12 @@
 import React from 'react';
-import { Comment } from '../models/GenericComment';
+import { usePost } from '../hooks/usePost';
 
 interface PostProps {
   title: string;
   description: string;
   imageUrl: string;
   author: string;
-  comments: Comment<any>[];
+  comments: any[];
 }
 
 const Post: React.FC<PostProps> = ({ title, description, imageUrl, author, comments }) => {
