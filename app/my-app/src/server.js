@@ -67,3 +67,20 @@ app.post('/api/register', async (req, res) => {
   const token = jwt.sign({ userId: user.id }, 'your_secret_key');
   res.json({ status: 'success', token });
 });
+
+app.post('/api/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    return res.status(400).json({ status: 'error', message: 'Пользователь не найден' });
+  }
+
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    return res.status(400).json({ status: 'error', message: 'Пароли не совпадают' });
+  }
+
+  const token = jwt.sign({ userId: user.id }, 'your_secret_key');
+  res.json({ status: 'success', token });
+});Это что за файл?
