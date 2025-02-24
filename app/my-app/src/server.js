@@ -37,3 +37,33 @@ app.get('/api/tags', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+const express = require('express');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const prisma = require('./prismaClient');
+const app = express();
+const port = 5000;
+
+app.use(express.json());
+
+
+app.post('/api/register', async (req, res) => {
+  const { email, password, name } = req.body;
+
+  const existingUser = await prisma.user.findUnique({ where: { email } });
+  if (existingUser) {
+    return res.status(400).json({ status: 'error', message: 'Такой пользователь уже существует' });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const user = await prisma.user.create({
+    data: {
+      email,
+      password: hashedPassword,
+      name,
+    },
+  });
+
+  const token = jwt.sign({ userId: user.id }, 'your_secret_key');
+  res.json({ status: 'success', token });
+});
