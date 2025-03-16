@@ -1,36 +1,32 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useUser } from '../context/UserContext';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginFormInputs {
-  username: string;
+  email: string;
   password: string;
 }
 
 const Login: React.FC = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>();
+  const { login } = useUser();
+  const navigate = useNavigate();
 
-  const onSubmit = (data: LoginFormInputs) => {
-    console.log(data);
+  const onSubmit = async (data: LoginFormInputs) => {
+    await login(data.email, data.password);
+    navigate('/profile');
   };
 
   return (
-    <div>
-      <h2>Авторизация</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label>Логин</label>
-          <input {...register('username', { required: 'Логин обязателен' })} />
-          {errors.username && <span>{errors.username.message}</span>}
-        </div>
-        <div>
-          <label>Пароль</label>
-          <input type="password" {...register('password', { required: 'Введи пароль!:(' })} />
-          {errors.password && <span>{errors.password.message}</span>}
-        </div>
-        <button type="submit">Войти</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register('email', { required: 'Email обязателен' })} />
+      {errors.email && <p>{errors.email.message}</p>}
+      <input type="password" {...register('password', { required: 'Пароль обязателен' })} />
+      {errors.password && <p>{errors.password.message}</p>}
+      <button type="submit">Войти</button>
+    </form>
   );
 };
 
-export default Login;
+export default Login;Login.tsx
